@@ -7,7 +7,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 
 # Os decorators abaixo significam que ambas as rotas irão retornar o método definido
-# @app.route('/')
+@app.route('/')
 @app.route('/index')
 # O decorator abaixo serve para indicar que a rota é protegida por autenticação
 @login_required
@@ -97,7 +97,7 @@ def user(username):
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
-    form = EditProfileForm()
+    form = EditProfileForm(current_user.username)
         
     if form.validate_on_submit():
         current_user.username = form.username.data

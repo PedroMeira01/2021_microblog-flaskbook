@@ -22,6 +22,12 @@ class User(UserMixin, db.Model):
 
     posts = db.relationship('Post', backref='author', lazy='dynamic')
 
+    followed = db.relationship(
+        'User', secondary=followers,
+        primaryjoin=(followers.c.follower_id == id),
+        secondaryjoin=(followers.c.followed_id == id),
+        backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
+
     # Este é um dunder method do Python para exibir a forma de retorno de um objeto
     def __repr__(self):
         return f'<User {self.username}>'
@@ -47,3 +53,8 @@ class Post(db.Model):
 
     def __repr__(self):
         return f'<Post {self.body}>'
+
+followers = db.Table('followers',
+    db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
+)
